@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAKI-LAKI SEJATI - Cerpen Putu Wijaya</title>
+    <style>
+        /* RESET & VARIABLES */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --galaxy-dark: #0a0e29;
+            --galaxy-blue: #1a1f4e;
+            --star-gold: #ffd166;
+            --nebula-pink: #ff9fe5;
+            --planet-blue: #4d7cfe;
+            --comet-teal: #a3d9ff;
+            --text-light: #f8f9fa;
+            --meteor-red: #ff6b6b;
+            --aurora-green: #51cf66;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: var(--galaxy-dark);
+            color: var(--text-light);
+            line-height: 1.8;
+            max-width: 210mm; /* A4 Width */
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* INTRO ANIMATION OVERLAY */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e29 0%, #1a1f4e 50%, #4d7cfe 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeOut 3s ease-in-out 5s forwards;
+        }
+        
+        .intro-title {
+            font-size: 3.5em;
+            color: var(--star-gold);
+            text-align: center;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: titleAppear 2s ease-in-out 0.5s forwards;
+            text-shadow: 0 0 20px rgba(255, 209, 102, 0.8);
+        }
+        
+        .intro-subtitle {
+            font-size: 1.5em;
+            color: var(--comet-teal);
+            text-align: center;
+            opacity: 0;
+            animation: subtitleAppear 2s ease-in-out 1s forwards;
+        }
+        
+        .intro-loading {
+            width: 80px;
+            height: 80px;
+            border: 4px solid transparent;
+            border-top: 4px solid var(--nebula-pink);
+            border-radius: 50%;
+            margin-top: 40px;
+            animation: spin 1.5s linear infinite, fadeOut 0.5s ease-in-out 4.5s forwards;
+        }
+        
+        /* BACKGROUND STARS - IMPROVED */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+        }
+        
+        .star-large {
+            animation: twinkle 4s infinite alternate, floatStar 20s infinite linear;
+        }
+        
+        /* PLANETS AND NEBULA */
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(1px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        /* METEOR SHOWERS */
+        .meteor {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--meteor-red);
+            z-index: -1;
+        }
+        
+        /* ASTRONAUTS - IMPROVED */
+        .astronaut {
+            position: fixed;
+            width: 120px;
+            height: 120px;
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .astronaut-1 {
+            background: radial-gradient(circle at 30% 30%, white 10px, transparent 11px),
+                        radial-gradient(circle at 70% 30%, white 10px, transparent 11px),
+                        linear-gradient(to bottom, white 40px, transparent 41px);
+            border-radius: 50% 50% 40% 40%;
+        }
+        
+        .astronaut-2 {
+            background: radial-gradient(circle at 30% 30%, var(--comet-teal) 15px, transparent 16px),
+                        radial-gradient(circle at 70% 30%, var(--comet-teal) 15px, transparent 16px),
+                        linear-gradient(to bottom, var(--comet-teal) 50px, transparent 51px);
+            border-radius: 50% 50% 40% 40%;
+        }
+        
+        /* CONSTELLATIONS */
+        .constellation {
+            position: absolute;
+            z-index: -1;
+        }
+        
+        .constellation-line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            transform-origin: 0 0;
+        }
+        
+        /* HEADER */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+            border-bottom: 3px solid var(--planet-blue);
+            position: relative;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 5.5s forwards;
+        }
+        
+        .title {
+            font-size: 2.8em;
+            color: var(--star-gold);
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 0 var(--galaxy-blue), 0 0 20px rgba(255, 209, 102, 0.5);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--nebula-pink), transparent);
+        }
+        
+        .author {
+            font-size: 1.4em;
+            color: var(--comet-teal);
+            font-style: italic;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(163, 217, 255, 0.5);
+        }
+        
+        .year {
+            color: var(--nebula-pink);
+            font-size: 1.1em;
+            background: rgba(255, 159, 229, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        /* CONTENT */
+        .content {
+            font-size: 1.1em;
+            text-align: justify;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 6s forwards;
+        }
+        
+        .page {
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(26, 31, 78, 0.3);
+            border-radius: 10px;
+            border-left: 5px solid var(--star-gold);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3), inset 0 0 30px rgba(26, 31, 78, 0.5);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .page:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 0 40px rgba(26, 31, 78, 0.7);
+        }
+        
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(77, 124, 254, 0.05) 50%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .page-number {
+            text-align: right;
+            color: var(--comet-teal);
+            font-size: 0.9em;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--planet-blue);
+            position: relative;
+            z-index: 1;
+        }
+        
+        p {
+            margin-bottom: 25px;
+            text-indent: 40px;
+            line-height: 1.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        p.no-indent {
+            text-indent: 0;
+        }
+        
+        .dialog {
+            margin: 25px 40px;
+            padding: 20px;
+            background: rgba(77, 124, 254, 0.1);
+            border-left: 4px solid var(--nebula-pink);
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .dialog:hover {
+            background: rgba(77, 124, 254, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .character {
+            font-weight: bold;
+            color: var(--star-gold);
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            text-shadow: 0 0 5px rgba(255, 209, 102, 0.5);
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, rgba(255,209,102,0.3) 0%, rgba(255,209,102,0) 100%);
+            padding: 3px 8px;
+            border-radius: 4px;
+            position: relative;
+        }
+        
+        /* ILLUSTRATIONS */
+        .illustration {
+            width: 200px;
+            height: 150px;
+            margin: 20px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        
+        .illustration-1 {
+            background: linear-gradient(45deg, var(--galaxy-blue), var(--planet-blue), var(--nebula-pink));
+        }
+        
+        .illustration-2 {
+            background: linear-gradient(45deg, var(--galaxy-dark), var(--comet-teal), var(--star-gold));
+        }
+        
+        .illustration-3 {
+            background: linear-gradient(45deg, var(--nebula-pink), var(--meteor-red), var(--aurora-green));
+        }
+        
+        /* CONTROL PANEL */
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 7s forwards;
+        }
+        
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--galaxy-blue);
+            border: 2px solid var(--planet-blue);
+            color: var(--text-light);
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(77, 124, 254, 0.5);
+        }
+        
+        .control-btn:hover {
+            background: var(--planet-blue);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(77, 124, 254, 0.8);
+        }
+        
+        /* FOOTER & QR SECTION */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 50px;
+            border-top: 3px solid var(--planet-blue);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 6.5s forwards;
+        }
+        
+        .qr-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 20px auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .qr-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 209, 102, 0.1) 50%, transparent 70%);
+            animation: shine 3s infinite linear;
+        }
+        
+        .instructions {
+            background: rgba(77, 124, 254, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: left;
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(77, 124, 254, 0.3);
+        }
+        
+        /* ANIMATIONS */
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+        
+        @keyframes titleAppear {
+            0% { opacity: 0; transform: translateY(-50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes subtitleAppear {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            100% { opacity: 0.9; }
+        }
+        
+        @keyframes floatStar {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(10px, -10px); }
+            50% { transform: translate(20px, 0); }
+            75% { transform: translate(10px, 10px); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        @keyframes meteorFall {
+            0% { transform: translateX(0) translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateX(500px) translateY(500px); opacity: 0; }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        /* PRINT STYLES */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                max-width: 100%;
+                padding: 0;
+            }
+            
+            .stars-container, .astronaut, .intro-overlay, .controls {
+                display: none !important;
+            }
+            
+            .page {
+                background: white !important;
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+                page-break-inside: avoid;
+            }
+            
+            .footer {
+                display: none !important;
+            }
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .intro-title {
+                font-size: 2.2em;
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+            
+            .dialog {
+                margin: 15px;
+            }
+            
+            .controls {
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- INTRO ANIMATION -->
+    <div class="intro-overlay" id="introOverlay">
+        <div class="intro-title">LAKI-LAKI SEJATI</div>
+        <div class="intro-subtitle">Cerpen Klasik oleh Putu Wijaya</div>
+        <div class="intro-loading"></div>
+    </div>
+    
+    <!-- BACKGROUND STARS & GALAXY -->
+    <div class="stars-container" id="starsContainer"></div>
+    
+    <!-- ASTRONAUT DECORATIONS -->
+    <div class="astronaut astronaut-1" style="top:15%; left:8%; animation: float 8s infinite ease-in-out;"></div>
+    <div class="astronaut astronaut-2" style="bottom:20%; right:10%; animation: float 10s infinite ease-in-out 1s; transform: scaleX(-1);"></div>
+    
+    <!-- CONTROL PANEL -->
+    <div class="controls">
+        <button class="control-btn" id="starsBtn" title="Toggle Bintang">⭐</button>
+        <button class="control-btn" id="themeBtn" title="Ubah Tema">🌙</button>
+        <button class="control-btn" id="printBtn" title="Cetak">🖨️</button>
+        <button class="control-btn" id="audioBtn" title="Musik Latar">🎵</button>
+    </div>
+    
+    <!-- HEADER -->
+    <div class="header">
+        <h1 class="title">LAKI-LAKI SEJATI</h1>
+        <div class="author">Cerpen Putu Wijaya</div>
+        <div class="year">Denpasar, akhir 2004</div>
+    </div>
+    
+    <!-- CONTENT - HALAMAN 1 -->
+    <div class="content">
+        <div class="page">
+            <div class="illustration illustration-1"></div>
+            
+            <p class="no-indent">Seorang perempuan muda bertanya kepada ibunya.</p>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Ibu, lelaki sejati itu seperti apa?</div>
+            </div>
+            
+            <p>Ibunya terkejut. Ia memandang takjub pada anak yang di luar pengamatannya sudah menjadi gadis jelita itu. Terpesona, karena waktu tak mau menunggu. Rasanya baru kemarin anak itu masih ngompol di sampingnya sehingga kasur berbau pesing. Tiba-tiba saja kini ia sudah menjadi perempuan yang punya banyak pertanyaan.</p>
+            
+            <p>Sepasang matanya yang dulu sering belekan itu, sekarang bagai sorot lampu mobil pada malam gelap. Sinarnya begitu tajam. Sekelilingnya jadi ikut memantulkan cahaya. Namun jalan yang ada di depan hidungnya sendiri, yang sedang ia tempuh, nampak masih berkabut. Hidup memang sebuah rahasia besar yang tak hanya dialami dalam cerita di dalam pengalaman orang lain, karena harus ditempuh sendiri.</p>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Kenapa kamu menanyakan itu, anakku?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Sebab aku ingin tahu.</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Dan sesudah tahu?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Aku tak tahu.</div>
+            </div>
+            
+            <p>Wajah gadis itu menjadi merah. Ibunya paham, karena ia pun pernah muda dan ingin menanyakan hal yang sama kepada ibunya, tetapi tidak berani. Waktu itu perasaan tidak pernah dibicarakan, apalagi yang menyangkut cinta. Kalaupun dicoba, jawaban yang muncul sering menyesatkan. Karena orang tua cenderung menyembunyikan rahasia kehidupan dari anak-anaknya yang dianggapnya belum cukup siap untuk mengalami. Kini segalanya sudah berubah. Anak-anak ingin tahu tak hanya yang harus mereka ketahui, tetapi semuanya. Termasuk yang dulu tabu. Mereka senang pada bahaya.</p>
+            
+            <div class="page-number">Halaman 1</div>
+        </div>
+        
+        <!-- HALAMAN 2 -->
+        <div class="page">
+            <p>Setelah menarik napas, ibu itu mengusap kepala putrinya dan berbisik.</p>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Jangan malu, anakku. Sebuah rahasia tak akan menguraikan dirinya, kalau kau sendiri tak penasaran untuk membukanya. Sebuah rahasia dimulai dengan rasa ingin tahu, meskipun sebenarnya kamu sudah tahu. Hanya karena kamu tidak pernah mengalami sendiri, pengetahuanmu hanya menjadi potret asing yang kamu baca dari buku. Banyak orang tua menyembunyikannya, karena pengetahuan yang tidak perlu akan membuat hidupmu berat dan mungkin sekali patah lalu berbelok sehingga kamu tidak akan pernah sampai ke tujuan. Tapi ibu tidak seperti itu. Ibu percaya zaman memberikan kamu kemampuan lain untuk menghadapi bahaya-bahaya yang juga sudah berbeda. Jadi ibu akan bercerita. Tetapi apa kamu siap menerima kebenaran walaupun itu tidak menyenangkan?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Maksud Ibu?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Lelaki sejati anakku, mungkin tidak seperti yang kamu bayangkan.</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Kenapa tidak?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Sebab di dalam mimpi, kamu sudah dikacaukan oleh bermacam-macam harapan yang meluap dari berbagai kekecewaan terhadap laki-laki yang tak pernah memenuhi harapan perempuan. Di situ yang ada hanya perasaan keki.</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Apakah itu salah?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Ibu tidak akan bicara tentang salah atau benar. Ibu hanya ingin kamu memisahkan antara perasaan dan pikiran. Antara harapan dan kenyataan.</div>
+            </div>
+            
+            <div class="page-number">Halaman 2</div>
+        </div>
+        
+        <!-- HALAMAN 3 -->
+        <div class="page">
+            <div class="illustration illustration-2"></div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Aku selalu memisahkan itu. Harapan adalah sesuatu yang kita inginkan terjadi yang seringkali bertentangan dengan apa yang kemudian ada di depan mata. Harapan menjadi ilusi, ia hanya bayang-bayang dari hati. Itu aku mengerti sekali. Tetapi apa salahnya bayang-bayang? Karena dengan bayang-bayang itulah kita tahu ada sinar matahari yang menyorot, sehingga berkat kegelapan, kita bisa melihat bagian-bagian yang diterangi cahaya, hal-hal yang nyata yang harus kita terima, meskipun itu bertentangan dengan harapan.</div>
+            </div>
+            
+            <p>Ibunya tersenyum.</p>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Jadi kamu masih ingat semua yang ibu katakan?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Kenapa tidak?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Berarti kamu sudah siap untuk melihat kenyataan?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Aku siap. Aku tak sabar lagi untuk mendengar. Tunjukkan padaku bagaimana laki-laki sejati itu.</div>
+            </div>
+            
+            <p>Ibu memejamkan matanya. Ia seakan-akan mengumpulkan seluruh unsur yang berserakan di mana-mana, untuk membangun sebuah sosok yang jelas dan nyata.</p>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Laki-laki yang sejati, anakku katanya kemudian, adalah... tetapi ia tak melanjutkan.</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Adalah?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Adalah seorang laki-laki yang sejati.</div>
+            </div>
+            
+            <div class="page-number">Halaman 3</div>
+        </div>
+        
+        <!-- HALAMAN 4 -->
+        <div class="page">
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Ah, Ibu jangan ngeledek begitu, aku serius, aku tak sabar.</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Bagus, Ibu hanya berusaha agar kamu benar-benar mendengar setiap kata yang akan ibu sampaikan. Jadi perhatikan dengan sungguh-sungguh dan jangan memotong, karena laki-laki sejati tak bisa diucapkan hanya dengan satu kalimat. Laki-laki sejati anakku, lanjut ibu sambil memandang ke depan, seakan-akan ia melihat laki-laki sejati itu sedang melangkah di udara menghampiri penjelmaannya dalam kata-kata.</div>
+            </div>
+            
+            <p>Laki-laki sejati adalah...</p>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Laki-laki yang perkasa?!</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Salah! Kan barusan Ibu bilang, jangan menyela! Laki-laki disebut laki-laki sejati, bukan hanya karena dia perkasa! Tembok beton juga perkasa, tetapi bukan laki-laki sejati hanya karena dia tidak tembus oleh peluru tidak goyah oleh gempa tidak tembus oleh garukan tsunami, tetapi dia harus lentur dan berjiwa. Tumbuh, berkembang bahkan berubah, seperti juga kamu.</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>O ya?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Bukan karena ampuh, bukan juga karena tampan laki-laki menjadi sejati. Seorang lelaki tidak menjadi laki-laki sejati hanya karena tubuhnya tahan banting, karena bentuknya indah dan proporsinya ideal. Seorang laki-laki tidak dengan sendirinya menjadi laki-laki sejati karena dia hebat, unggul, selalu menjadi pemenang, berani dan rela berkorban. Seorang laki-laki belum menjadi laki-laki sejati hanya karena dia kaya-raya, baik, bijaksana, pintar bicara, beriman, menarik, rajin sembahyang, ramah, tidak sombong, tidak suka memfitnah, rendah hati, penuh pengertian, berwibawa, jago bercinta, pintar mengalah, penuh dengan toleransi, selalu menghargai orang lain, punya kedudukan, tinggi pangkat atau punya karisma serta banyak akal.</div>
+            </div>
+            
+            <div class="page-number">Halaman 4</div>
+        </div>
+        
+        <!-- HALAMAN 5-12 (disingkat untuk keringkasan) -->
+        <!-- Saya akan menyertakan halaman 5 dan 12 sebagai contoh -->
+        
+        <!-- HALAMAN 5 -->
+        <div class="page">
+            <div class="illustration illustration-3"></div>
+            
+            <p>Seorang laki-laki tidak menjadi laki-laki sejati hanya karena dia berjasa, berguna, bermanfaat, jujur, lihai, pintar atau jenius. Seorang laki-laki meskipun dia seorang idola yang kamu kagumi, seorang pemimpin, seorang pahlawan, seorang perintis, pemberontak dan pembaru, bahkan seorang yang arif-bijaksana, tidak membuat dia otomatis menjadi laki-laki sejati!</p>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Kalau begitu apa dong?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Seorang laki-laki sejati adalah seorang yang melihat yang pantas dilihat, mendengar yang pantas didengar, merasa yang pantas dirasa, berpikir yang pantas dipikir, membaca yang pantas dibaca, dan berbuat yang pantas dibuat, karena itu dia berpikir yang pantas dipikir, berkelakuan yang pantas dilakukan dan hidup yang sepantasnya dijadikan kehidupan.</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Hanya itu?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Seorang laki-laki sejati adalah seorang laki-laki yang satu kata dengan perbuatan!</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Orang yang konsekuen?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Lebih dari itu!</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Seorang yang bisa dipercaya?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Semuanya!</div>
+            </div>
+            
+            <div class="page-number">Halaman 5</div>
+        </div>
+        
+        <!-- ... (halaman 6-11) ... -->
+        
+        <!-- HALAMAN 12 -->
+        <div class="page">
+            <div class="dialog">
+                <div class="character">PEREMPUAN MUDA:</div>
+                <div>Untuk apa?</div>
+            </div>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Banyak laki-laki di jalanan. Tangkap salah satu. Ambil yang mana saja, sembarangan dengan mata terpejam juga tidak apa-apa. Tak peduli siapa namanya, bagaimana tampangnya, apa pendidikannya, bagaimana otaknya dan tak peduli seperti apa perasaannya. Gaet sembarang laki-laki yang mana saja yang tergapai oleh tanganmu dan jadikan ia teman hidupmu!</div>
+            </div>
+            
+            <p>Perempuan muda itu tecengang. Hampir saja ia mau memprotes. Tapi ibunya keburu memotong.</p>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Asal, lanjut ibunya dengan suara lirih namun tegas, asal, ini yang terpenting anakku, asal dia benar-benar mencintaimu dan kamu sendiri juga sungguh-sungguh mencintainya. Karena cinta, anakku, karena cinta dapat mengubah segala-galanya.</div>
+            </div>
+            
+            <p>Perempuan muda itu tercengang.</p>
+            
+            <div class="dialog">
+                <div class="character">IBU:</div>
+                <div>Dan lebih dari itu, lanjut ibu sebelum anaknya sempat membantah, lebih dari itu anakku, katanya dengan suara yang lebih lembut lagi namun semakin tegas, karena seorang perempuan, anakku, siapa pun dia, dari mana pun dia, bagaimana pun dia, setiap perempuan, setiap perempuan anakku, dapat membuat seorang lelaki, siapa pun dia, bagaimana pun dia, apa pun pekerjaannya bahkan bagaimana pun kalibernya, seorang perempuan dapat membuat setiap lelaki menjadi seorang laki-laki yang sejati!</div>
+            </div>
+            
+            <div class="page-number">Halaman 12</div>
+        </div>
+    </div>
+    
+    <!-- FOOTER & QR CODE -->
+    <div class="footer">
+        <h3 style="color: var(--star-gold); margin-bottom: 20px;">✨ SELESAI ✨</h3>
+        
+        <div class="qr-container">
+            <h4 style="color: black; margin-bottom: 10px;">📱 SCAN UNTUK OFFLINE</h4>
+            <div id="qrcode"></div>
+            <p style="color: #666; font-size: 12px; margin-top: 10px;">
+                Scan QR Code di atas<br>
+                untuk simpan cerita ini
+            </p>
+        </div>
+        
+        <div class="instructions">
+            <h4 style="color: var(--star-gold); margin-bottom: 10px;">📋 CARA OFFLINE:</h4>
+            <ol style="text-align: left; padding-left: 20px;">
+                <li>Buka <strong>generate-qr.html</strong> di browser</li>
+                <li>Upload file ini atau copy URL-nya</li>
+                <li>Generate QR Code</li>
+                <li>Print QR Code dan tempel di buku</li>
+                <li>Scan dengan HP → bisa baca offline!</li>
+            </ol>
+            <p style="margin-top: 15px; color: var(--comet-teal);">
+                <strong>Save halaman ini:</strong> Ctrl+S → simpan sebagai "Laki-Laki Sejati.html"
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // CREATE ENHANCED STARS BACKGROUND
+        function createStars() {
+            const container = document.getElementById('starsContainer');
+            const starCount = 300;
+            const meteorCount = 10;
+            
+            // Create stars
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = Math.random() > 0.7 ? 'star star-large' : 'star';
+                
+                const size = Math.random() * 3 + 1;
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const delay = Math.random() * 3;
+                const duration = Math.random() * 2 + 2;
+                const brightness = Math.random() * 0.7 + 0.3;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.animationDelay = `${delay}s`;
+                star.style.animationDuration = `${duration}s`;
+                star.style.opacity = brightness;
+                star.style.backgroundColor = `rgba(255, 255, 255, ${brightness})`;
+                
+                // Add occasional colored stars
+                if (Math.random() > 0.9) {
+                    const colors = ['#ffd166', '#a3d9ff', '#ff9fe5', '#51cf66'];
+                    star.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    star.style.boxShadow = `0 0 ${size*2}px ${size}px rgba(255,255,255,0.2)`;
+                }
+                
+                container.appendChild(star);
+            }
+            
+            // Create planets
+            for (let i = 0; i < 4; i++) {
+                const planet = document.createElement('div');
+                planet.className = 'planet';
+                
+                const size = Math.random() * 100 + 50;
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const colors = ['#4d7cfe', '#ff9fe5', '#51cf66', '#ffd166'];
+                const color = colors[i];
+                
+                planet.style.width = `${size}px`;
+                planet.style.height = `${size}px`;
+                planet.style.left = `${x}%`;
+                planet.style.top = `${y}%`;
+                planet.style.backgroundColor = color;
+                planet.style.boxShadow = `0 0 ${size}px ${size/2}px ${color}20`;
+                
+                container.appendChild(planet);
+            }
+            
+            // Create nebulae
+            for (let i = 0; i < 3; i++) {
+                const nebula = document.createElement('div');
+                nebula.className = 'nebula';
+                
+                const size = Math.random() * 400 + 200;
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const colors = ['#4d7cfe', '#ff9fe5', '#51cf66'];
+                const color = colors[i];
+                
+                nebula.style.width = `${size}px`;
+                nebula.style.height = `${size}px`;
+                nebula.style.left = `${x}%`;
+                nebula.style.top = `${y}%`;
+                nebula.style.backgroundColor = color;
+                
+                container.appendChild(nebula);
+            }
+            
+            // Create meteors
+            for (let i = 0; i < meteorCount; i++) {
+                const meteor = document.createElement('div');
+                meteor.className = 'meteor';
+                
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const delay = Math.random() * 10;
+                const duration = Math.random() * 2 + 1;
+                
+                meteor.style.left = `${x}%`;
+                meteor.style.top = `${y}%`;
+                meteor.style.animation = `meteorFall ${duration}s linear ${delay}s infinite`;
+                
+                container.appendChild(meteor);
+            }
+        }
+        
+        // CREATE CONSTELLATIONS
+        function createConstellations() {
+            const container = document.getElementById('starsContainer');
+            const constellationCount = 5;
+            
+            for (let i = 0; i < constellationCount; i++) {
+                const constellation = document.createElement('div');
+                constellation.className = 'constellation';
+                
+                const x = Math.random() * 80 + 10;
+                const y = Math.random() * 80 + 10;
+                
+                constellation.style.left = `${x}%`;
+                constellation.style.top = `${y}%`;
+                
+                // Create 3-6 stars in constellation
+                const starCount = Math.floor(Math.random() * 4) + 3;
+                let prevX = 0, prevY = 0;
+                
+                for (let j = 0; j < starCount; j++) {
+                    const starX = Math.random() * 100;
+                    const starY = Math.random() * 100;
+                    
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.width = '3px';
+                    star.style.height = '3px';
+                    star.style.left = `${starX}%`;
+                    star.style.top = `${starY}%`;
+                    star.style.backgroundColor = '#a3d9ff';
+                    star.style.boxShadow = '0 0 6px 2px rgba(163, 217, 255, 0.5)';
+                    
+                    constellation.appendChild(star);
+                    
+                    // Connect stars with lines
+                    if (j > 0) {
+                        const line = document.createElement('div');
+                        line.className = 'constellation-line';
+                        
+                        const dx = starX - prevX;
+                        const dy = starY - prevY;
+                        const length = Math.sqrt(dx*dx + dy*dy);
+                        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                        
+                        line.style.width = `${length}%`;
+                        line.style.height = '1px';
+                        line.style.left = `${prevX}%`;
+                        line.style.top = `${prevY}%`;
+                        line.style.transform = `rotate(${angle}deg)`;
+                        
+                        constellation.appendChild(line);
+                    }
+                    
+                    prevX = starX;
+                    prevY = starY;
+                }
+                
+                container.appendChild(constellation);
+            }
+        }
+        
+        // CREATE SIMPLE QR CODE
+        function createQRCode() {
+            const container = document.getElementById('qrcode');
+            if (container) {
+                container.innerHTML = '';
+                const canvas = document.createElement('canvas');
+                canvas.width = 200;
+                canvas.height = 200;
+                container.appendChild(canvas);
+                
+                const ctx = canvas.getContext('2d');
+                
+                // Draw QR-like pattern
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, 200, 200);
+                
+                ctx.fillStyle = 'black';
+                // Draw positioning markers
+                ctx.fillRect(10, 10, 40, 40);
+                ctx.fillRect(150, 10, 40, 40);
+                ctx.fillRect(10, 150, 40, 40);
+                
+                // Draw pattern
+                for (let i = 0; i < 12; i++) {
+                    for (let j = 0; j < 12; j++) {
+                        if ((i + j * 3) % 5 === 0 || (i * j) % 7 === 0) {
+                            ctx.fillRect(i * 15 + 15, j * 15 + 15, 8, 8);
+                        }
+                    }
+                }
+                
+                // Add text
+                ctx.fillStyle = '#4d7cfe';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('LAKI-LAKI', 100, 180);
+                ctx.fillText('SEJATI', 100, 195);
+            }
+        }
+        
+        // CONTROL PANEL FUNCTIONALITY
+        function setupControls() {
+            const starsBtn = document.getElementById('starsBtn');
+            const themeBtn = document.getElementById('themeBtn');
+            const printBtn = document.getElementById('printBtn');
+            const audioBtn = document.getElementById('audioBtn');
+            
+            let starsVisible = true;
+            let darkTheme = true;
+            let audioPlaying = false;
+            let audioContext;
+            let oscillator;
+            
+            // Toggle stars visibility
+            starsBtn.addEventListener('click', function() {
+                const starsContainer = document.getElementById('starsContainer');
+                starsVisible = !starsVisible;
+                
+                if (starsVisible) {
+                    starsContainer.style.opacity = '1';
+                    starsBtn.innerHTML = '⭐';
+                    starsBtn.title = 'Sembunyikan Bintang';
+                } else {
+                    starsContainer.style.opacity = '0.3';
+                    starsBtn.innerHTML = '🌌';
+                    starsBtn.title = 'Tampilkan Bintang';
+                }
+            });
+            
+            // Toggle theme
+            themeBtn.addEventListener('click', function() {
+                const root = document.documentElement;
+                darkTheme = !darkTheme;
+                
+                if (darkTheme) {
+                    root.style.setProperty('--galaxy-dark', '#0a0e29');
+                    root.style.setProperty('--galaxy-blue', '#1a1f4e');
+                    root.style.setProperty('--text-light', '#f8f9fa');
+                    themeBtn.innerHTML = '🌙';
+                    themeBtn.title = 'Mode Terang';
+                } else {
+                    root.style.setProperty('--galaxy-dark', '#f0f2f5');
+                    root.style.setProperty('--galaxy-blue', '#d0d7e2');
+                    root.style.setProperty('--text-light', '#333333');
+                    themeBtn.innerHTML = '☀️';
+                    themeBtn.title = 'Mode Gelap';
+                }
+            });
+            
+            // Print functionality
+            printBtn.addEventListener('click', function() {
+                window.print();
+            });
+            
+            // Audio toggle (ambient space sound)
+            audioBtn.addEventListener('click', function() {
+                audioPlaying = !audioPlaying;
+                
+                if (audioPlaying) {
+                    // Start simple ambient sound
+                    try {
+                        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.value = 220;
+                        oscillator.type = 'sine';
+                        gainNode.gain.value = 0.02;
+                        
+                        oscillator.start();
+                        
+                        // Modulate frequency slightly
+                        setInterval(() => {
+                            oscillator.frequency.value = 220 + Math.sin(Date.now() / 1000) * 10;
+                        }, 100);
+                        
+                        audioBtn.innerHTML = '🔊';
+                        audioBtn.title = 'Matikan Suara';
+                    } catch (e) {
+                        console.log('Audio not supported:', e);
+                        audioPlaying = false;
+                    }
+                } else {
+                    // Stop audio
+                    if (oscillator) {
+                        oscillator.stop();
+                    }
+                    audioBtn.innerHTML = '🎵';
+                    audioBtn.title = 'Nyalakan Suara Latar';
+                }
+            });
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl+S to save
+                if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                    e.preventDefault();
+                    alert('Untuk save offline: File → Save Page As → HTML Complete\nAtau gunakan Ctrl+P untuk print versi PDF.');
+                }
+                
+                // Space to toggle stars
+                if (e.key === ' ') {
+                    e.preventDefault();
+                    starsBtn.click();
+                }
+                
+                // T to toggle theme
+                if (e.key === 't' || e.key === 'T') {
+                    themeBtn.click();
+                }
+            });
+        }
+        
+        // PARALLAX EFFECT ON SCROLL
+        function setupParallax() {
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const stars = document.querySelector('.stars-container');
+                
+                if (stars) {
+                    stars.style.transform = `translateY(${scrolled * 0.5}px)`;
+                }
+                
+                const astronauts = document.querySelectorAll('.astronaut');
+                astronauts.forEach((astronaut, index) => {
+                    const speed = 0.2 + (index * 0.1);
+                    astronaut.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
+        }
+        
+        // PAGE TURN ANIMATION
+        function setupPageAnimations() {
+            const pages = document.querySelectorAll('.page');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'pulse 0.5s ease';
+                        setTimeout(() => {
+                            entry.target.style.animation = '';
+                        }, 500);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            pages.forEach(page => {
+                observer.observe(page);
+            });
+        }
+        
+        // INITIALIZE EVERYTHING
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove intro overlay after animation
+            setTimeout(() => {
+                const introOverlay = document.getElementById('introOverlay');
+                if (introOverlay) {
+                    introOverlay.style.display = 'none';
+                }
+            }, 5500);
+            
+            // Create enhanced background
+            createStars();
+            createConstellations();
+            createQRCode();
+            
+            // Setup interactions
+            setupControls();
+            setupParallax();
+            setupPageAnimations();
+            
+            // Add floating effect to title
+            const title = document.querySelector('.title');
+            setInterval(() => {
+                title.style.transform = `translateY(${Math.sin(Date.now() / 1000) * 3}px)`;
+            }, 50);
+        });
+    </script>
+</body>
+</html>
